@@ -3,7 +3,7 @@
 ![php](http://blog.legacyteam.info/wp-content/uploads/2014/10/laravel-logo-white.png)
 
 
-The official [Heroku buildpack](http://devcenter.heroku.com/articles/buildpacks) for PHP applications + support for running Laravel artisan commands during the deploy.
+Forked official [Heroku buildpack](http://devcenter.heroku.com/articles/buildpacks) for PHP applications with added support for running Laravel artisan commands.
 
 ## Usage
 
