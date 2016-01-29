@@ -20,13 +20,12 @@ If you also have files from other frameworks or languages that could trigger ano
 Please refer to [Dev Center](https://devcenter.heroku.com/categories/php) for further usage instructions.
 
 To run post deploy commands set config variable 
-"DEPLOY_ARTISAN_TASKS" with the command name, f.e:
-KEY: DEPLOY_ARTISAN_TASKS 
-VALUE: migrate --force
+    
+    heroku config:set DEPLOY_ARTISAN_TASKS=migrate --force
  
-Use "--force" parameter if you running production environment, so then laravel won't ask you if you are really 
-want to run migrations.
+Use "--force" parameter if you running production environment, so then laravel won't prompt you if you are really 
+want to run migrations and won't interrupt the deploy.
 
 Running multiple artisan commands, f.e:
-KEY: DEPLOY_ARTISAN_TASKS
-VALUE: "migrate && php artisan route:cache"
+
+    heroku config:set DEPLOY_ARTISAN_TASKS=migrate --force && php artisan route:cache
