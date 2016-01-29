@@ -27,6 +27,11 @@ install_ext () {
     fi
 }
 
+# Run post install artisan tasks
+run_artisan_tasks (){
+    cd $build_dir && php artisan $DEPLOY_ARTISAN_TASKS
+}
+
 # fail hard
 set -o pipefail
 # fail harder
@@ -436,3 +441,13 @@ install_newrelic_userini
 cat > $bp_dir/export <<"EOF"
 export PATH="/app/.heroku/php/bin:/app/.heroku/php/sbin:$PATH"
 EOF
+
+if [ -z "$DEPLOY_ARTISAN_TASKS" ]; then
+  echo "DEPLOY_ARTISAN_TASKS has not been set"
+  echo "You can set it with:"
+  echo 'heroku config:set DEPLOY_ARTISAN_TASKS="tasks to run"'
+  exit 0
+fi
+
+# run artisan commands
+run_artisan_tasks
