@@ -437,6 +437,8 @@ cat > $bp_dir/export <<"EOF"
 export PATH="/app/.heroku/php/bin:/app/.heroku/php/sbin:$PATH"
 EOF
 
+set -o nounset
+
 if [ -z "$DEPLOY_ARTISAN_TASKS" ]; then
   echo "DEPLOY_ARTISAN_TASKS has not been set"
   echo "You can set it with:"

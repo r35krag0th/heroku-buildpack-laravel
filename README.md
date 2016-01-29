@@ -1,11 +1,9 @@
-# Heroku buildpack: PHP
+# Heroku buildpack: Laravel
 
-![php](https://cloud.githubusercontent.com/assets/51578/8882982/73ea501a-3219-11e5-8f87-311e6b8a86fc.jpg)
+![php](http://blog.legacyteam.info/wp-content/uploads/2014/10/laravel-logo-white.png)
 
 
-This is the official [Heroku buildpack](http://devcenter.heroku.com/articles/buildpacks) for PHP applications.
-
-It uses Composer for dependency management, supports PHP or HHVM (experimental) as runtimes, and offers a choice of Apache2 or Nginx web servers.
+The official [Heroku buildpack](http://devcenter.heroku.com/articles/buildpacks) for PHP applications + support for running Laravel artisan commands during the deploy.
 
 ## Usage
 
@@ -17,46 +15,18 @@ You'll need to use at least an empty `composer.json` in your application.
 
 If you also have files from other frameworks or languages that could trigger another buildpack to detect your application as one of its own, e.g. a `package.json` which might cause your code to be detected as a Node.js application even if it is a PHP application, then you need to manually set your application to use this buildpack:
 
-    heroku buildpacks:set https://github.com/heroku/heroku-buildpack-php
+    heroku buildpacks:set https://github.com/lifekent/heroku-buildpack-laravel.git
 
 Please refer to [Dev Center](https://devcenter.heroku.com/categories/php) for further usage instructions.
 
-## Development
+To run post deploy commands set config variable 
+"DEPLOY_ARTISAN_TASKS" with the command name, f.e:
+KEY: DEPLOY_ARTISAN_TASKS 
+VALUE: migrate --force
+ 
+Use "--force" parameter if you running production environment, so then laravel won't ask you if you are really 
+want to run migrations.
 
-The following information only applies if you're forking and hacking on this buildpack for your own purposes.
-
-### Compiling Binaries
-
-You need an S3 bucket, referenced in `bin/compile`, to host your own binaries if you want custom ones.
-
-The folder `support/build` contains [Bob](http://github.com/kennethreitz/bob-builder) build scripts for all binaries and dependencies.
-
-To get started with it, create a Python app (*Bob* is a Python application) on Heroku inside a clone of this repository, and set your S3 config vars:
-
-    $ heroku create --buildpack https://github.com/heroku/heroku-buildpack-python
-    $ heroku ps:scale web=0
-    $ heroku config:set WORKSPACE_DIR=/app/support/build
-    $ heroku config:set AWS_ACCESS_KEY_ID=<your_aws_key>
-    $ heroku config:set AWS_SECRET_ACCESS_KEY=<your_aws_secret>
-    $ heroku config:set S3_BUCKET=<your_s3_bucket_name>
-    $ heroku config:set S3_PREFIX=<optional_s3_subfolder_to_upload_to>
-
-Then, shell into an instance and run a build by giving the name of the formula inside `support/build`:
-
-    $ heroku run bash
-    Running `bash` attached to terminal... up, run.6880
-    ~ $ bob build php-5.5.11RC1
-    
-    Fetching dependencies... found 2:
-      - libraries/zlib
-      - libraries/libmemcached
-    Building formula php-5.5.11RC1:
-        === Building PHP
-        Fetching PHP v5.5.11RC1 source...
-        Compiling PHP v5.5.11RC1...
-
-If this works, run `bob deploy` instead of `bob build` to have the result uploaded to S3 for you.
-
-To speed things up drastically, it'll usually be a good idea to `heroku run bash --size PX` instead.
-
-If the dependencies are not yet deployed, you can do so by e.g. running `bob deploy libraries/zlib`.
+Running multiple artisan commands, f.e:
+KEY: DEPLOY_ARTISAN_TASKS
+VALUE: "migrate && php artisan route:cache"
