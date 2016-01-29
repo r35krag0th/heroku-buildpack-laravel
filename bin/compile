@@ -27,11 +27,6 @@ install_ext () {
     fi
 }
 
-# Run post install artisan tasks
-run_artisan_tasks (){
-    cd $build_dir && php artisan $DEPLOY_ARTISAN_TASKS
-}
-
 # fail hard
 set -o pipefail
 # fail harder
@@ -450,4 +445,4 @@ if [ -z "$DEPLOY_ARTISAN_TASKS" ]; then
 fi
 
 # run artisan commands
-run_artisan_tasks
+cd $build_dir && php artisan $DEPLOY_ARTISAN_TASKS
