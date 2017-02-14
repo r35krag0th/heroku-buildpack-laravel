@@ -279,7 +279,7 @@ export -f composer
 # handle extensions for PHP
 if [[ "$engine" == "php" ]]; then
     status "Enabling PHP extensions..."
-    
+
     exts=()
     if [[ -f "$COMPOSER_LOCK" ]]; then
         exts=($(cat "$COMPOSER_LOCK" | python -c 'import sys, json, itertools; l=json.load(sys.stdin); print "\n".join(list(set(itertools.chain([plat[4:].lower() for plat in l.get("platform", []) if plat.startswith("ext-")], *[ [ pkg[4:].lower() for pkg in p.get("require", []) if pkg.startswith("ext-") ] for p in l.get("packages", []) ]))))' 2> /dev/null || true)) # convert to array
@@ -288,7 +288,7 @@ if [[ "$engine" == "php" ]]; then
     for ext in "${!exts[@]}"; do # loop over keys in case the array is empty or else it'll error out
         install_ext "${exts[$ext]}" $ext_source
     done
-    
+
     if [[ ${#exts[@]} -eq 0 || ! ${exts[*]} =~ "zend-opcache" ]]; then
         install_ext "zend-opcache" "automatic"
         exts+=("zend-opcache")
@@ -358,7 +358,13 @@ fi
 unset COMPOSER_GITHUB_OAUTH_TOKEN
 
 # install dependencies unless composer.json is completely empty (in which case it'd talk to packagist.org which may be slow and is unnecessary)
-cat "$COMPOSER" | python -c 'import sys,json; sys.exit(not json.load(sys.stdin));' && composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction 2>&1 | indent
+echo -e "\033[35m****************************** ABOUT TO RUN INSTALL  *********************************\033[0m";
+cat "$COMPOSER" \
+    | python -c 'import sys,json; sys.exit(not json.load(sys.stdin));' \
+        && composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction 2>&1 \
+        | indent
+
+echo -e "\033[35m****************************** WE HAVE MADE IT THIS FAR *********************************\033[0m";
 
 composer show --installed heroku/heroku-buildpack-php &> /dev/null && error "Your '$COMPOSER' requires 'heroku/heroku-buildpack-php'.
 This package may only be used as a dependency in 'require-dev'!"
