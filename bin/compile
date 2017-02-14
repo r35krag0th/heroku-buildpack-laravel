@@ -365,7 +365,8 @@ cat "$COMPOSER" \
             --no-dev \
             --prefer-dist \
             --no-interaction \
-            --no-autoloader \
+            --optimize-autoloader \
+            -vvv \
             2>&1 \
         | indent
 
