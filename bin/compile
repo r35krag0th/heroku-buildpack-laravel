@@ -361,7 +361,12 @@ unset COMPOSER_GITHUB_OAUTH_TOKEN
 echo -e "\033[35m****************************** ABOUT TO RUN INSTALL  *********************************\033[0m";
 cat "$COMPOSER" \
     | python -c 'import sys,json; sys.exit(not json.load(sys.stdin));' \
-        && composer install --no-dev --prefer-dist --no-interaction 2>&1 \
+        && composer install \
+            --no-dev \
+            --prefer-dist \
+            --no-interaction \
+            --no-autoloader \
+            2>&1 \
         | indent
 
 echo -e "\033[35m****************************** WE HAVE MADE IT THIS FAR *********************************\033[0m";
